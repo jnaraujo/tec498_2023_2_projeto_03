@@ -1,7 +1,7 @@
 module FF_jk(
-  j, k, reset, clock, q
+  j, k, reset, preset, clock, q
 );
-  input j, k, clock;
+  input j, k, clock, preset;
   input reset;
   output q;
 
@@ -11,9 +11,11 @@ module FF_jk(
     q = 1'b0;
   end
 
-  always @(posedge clock or posedge reset) begin
+  always @(posedge clock or posedge reset or posedge preset) begin
     if (reset) begin
       q = 1'b0;
+    end else if (preset) begin
+      q = 1'b1;
     end else begin
       case ({j, k})
         2'b00: q = q;
@@ -26,13 +28,14 @@ module FF_jk(
 endmodule
 
 module TB_FF_jk();
-  reg j, k, clk, reset;
+  reg j, k, clk, reset, preset;
   wire q;
 
-  FF_jk FF_jk(j, k, reset, clk, q);
+  FF_jk FF_jk(j, k, reset, preset, clk, q);
 
   initial begin
     reset = 1'b0;
+    preset = 1'b0;
 
     j = 1'b0; k = 1'b0; clk = 1'b0; #10; // q = 0
     j = 1'b0; k = 1'b0; clk = 1'b1; #10; // q = 0

@@ -11,19 +11,19 @@ module contador_duzias(clock, reset, S3, S2, S1, S0);
   );
 
   FF_jk FF_jk3(
-    j3, k3, reset, clock, a
+    j3, k3, reset, 1'b0, clock, a
   );
 
   FF_jk FF_jk2(
-    j2, k2, reset, clock, b
+    j2, k2, reset, 1'b0, clock, b
   );
 
   FF_jk FF_jk1(
-    j1, k1, reset, clock, c
+    j1, k1, reset, 1'b0, clock, c
   );
 
   FF_jk FF_jk0(
-    j0, k0, reset, clock, d
+    j0, k0, reset, 1'b0, clock, d
   );
 
   assign S3 = a;
