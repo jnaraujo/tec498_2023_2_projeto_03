@@ -50,6 +50,7 @@ set_global_assignment -name POWER_EXT_SUPPLY_VOLTAGE_TO_REGULATOR 3.3V
 set_global_assignment -name VERILOG_FILE projeto.v
 set_global_assignment -name VERILOG_FILE menor_5.v
 set_global_assignment -name VERILOG_FILE FF_jk.v
+set_global_assignment -name VERILOG_FILE level_to_pulse.v
 set_global_assignment -name VERILOG_FILE divisor_freq.v
 set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
