@@ -1,24 +1,28 @@
 module contador_0_99(
-  clock, i, reset, auto_repor,
+  clock, i, reset, auto_repor, reset_no_99,
   M3, M2, M1, M0, S3, S2, S1, S0
   );
-  input clock, reset, auto_repor, i;
+  input clock, reset, auto_repor, i, reset_no_99;
   output M3, M2, M1, M0, S3, S2, S1, S0;
 
   wire clock_ccd, clock_ccd_d;
   wire u_S3, u_S2, u_S1, u_S0;
   wire d_S3, d_S2, d_S1, d_S0;
-  wire eh_noventa_nove, repor;
-  wire u_menor_5, d_zero;
+  wire eh_nove_d, eh_nove_u, eh_noventa_nove;
+  wire u_menor_5, d_zero, repor, reset_contador;
+
+  or orrst(reset_contador, reset, reset_no_99 && eh_noventa_nove);
 
   and and0(clock_ccd, clock, ~eh_noventa_nove);
-  contador_cd ccd_u(clock_ccd, i, reset, 1'b0, repor, u_S3, u_S2, u_S1, u_S0); // unidades
+  contador_cd ccd_u(clock_ccd, i, reset_contador, 1'b0, repor, u_S3, u_S2, u_S1, u_S0); // unidades
 
-  contador_cd ccd_d(clock_ccd_d, i, reset, repor, 1'b0, d_S3, d_S2, d_S1, d_S0); // dezenas
+  contador_cd ccd_d(clock_ccd_d, i, reset_contador, repor, 1'b0, d_S3, d_S2, d_S1, d_S0); // dezenas
 
   mux_2x1 mux_2x1(u_S3, ~u_S3, i, clock_ccd_d);
 
-  eh_nove eh_nove(u_S3 & d_S3, u_S2 & d_S2, u_S1 & d_S1, u_S0 & d_S0, eh_noventa_nove);
+  eh_nove eh_noveU(u_S3, u_S2, u_S1, u_S0, eh_nove_u); // unidades eh nove
+  eh_nove eh_noveD(d_S3, d_S2, d_S1, d_S0, eh_nove_d); // dezenas eh nove
+  and and_en(eh_noventa_nove, eh_nove_d, eh_nove_u); // eh noventa nove
 
   and and1(d_zero, ~d_S3, ~d_S2, ~d_S1, ~d_S0); // dezena eh zero
   menor_5 menor_5(u_S3, u_S2, u_S1, u_S0, u_menor_5); // unidades eh menor que 5
@@ -88,5 +92,19 @@ module TB_contador_0_99();
     i = 1; clock = 0; reset = 0; auto_repor = 1; #10; // M = 0001 S = 0000
     i = 1; clock = 1; reset = 0; auto_repor = 1; #10; // M = 0101 S = 0010
   end
+endmodule
 
+module TB_contador_0_99_for();
+  reg clock;
+  wire M3, M2, M1, M0, S3, S2, S1, S0;
+  integer i;
+
+  contador_0_99 contador_0_99(clock, 1'b1, 1'b0, 1'b0, 1'b1, M3, M2, M1, M0, S3, S2, S1, S0);
+
+  initial begin
+    for (i = 0; i < 110; i = i + 1) begin
+      clock = 0; #10;
+      clock = 1; #10;
+    end
+  end
 endmodule
