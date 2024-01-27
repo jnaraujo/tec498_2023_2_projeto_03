@@ -38,7 +38,7 @@
 
 set_global_assignment -name FAMILY "MAX II"
 set_global_assignment -name DEVICE EPM240T100C5
-set_global_assignment -name TOP_LEVEL_ENTITY mef_principal
+set_global_assignment -name TOP_LEVEL_ENTITY projeto
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 18.0.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "12:27:36  JANUARY 15, 2024"
 set_global_assignment -name LAST_QUARTUS_VERSION "18.0.0 Lite Edition"
@@ -58,5 +58,13 @@ set_global_assignment -name VERILOG_FILE mux_2x1.v
 set_global_assignment -name VERILOG_FILE contador_0_99.v
 set_global_assignment -name VERILOG_FILE eh_nove.v
 set_global_assignment -name VERILOG_FILE mef_principal.v
+set_global_assignment -name VERILOG_FILE display.v
+set_global_assignment -name VERILOG_FILE contador.v
+set_global_assignment -name VERILOG_FILE mux_16x8.v
+set_global_assignment -name VERILOG_FILE demux_1x4.v
+set_global_assignment -name VERILOG_FILE mux_32x8.v
+set_global_assignment -name VERILOG_FILE mux_4x1.v
+set_global_assignment -name VERILOG_FILE demux_1x2.v
+set_global_assignment -name VERILOG_FILE FF_d.v
 set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
