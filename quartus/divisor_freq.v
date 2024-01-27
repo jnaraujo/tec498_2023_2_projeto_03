@@ -1,9 +1,9 @@
 // Divisor de frequência de 50MHz para aproximadamente 1525Hz
 module divisor_freq(clock_in, clock_out);
   input clock_in;
-  output [15:0] clock_out;
+  output [20:0] clock_out;
 
-  wire [15:0] clock_out_temp;
+  wire [20:0] clock_out_temp;
 
   FF_jk FF_jk1(1'b1, 1'b1, 1'b0, 1'b0, clock_in, clock_out_temp[0]);
   FF_jk FF_jk2(1'b1, 1'b1, 1'b0, 1'b0, clock_out_temp[0], clock_out_temp[1]);
@@ -21,6 +21,11 @@ module divisor_freq(clock_in, clock_out);
   FF_jk FF_jk14(1'b1, 1'b1, 1'b0, 1'b0, clock_out_temp[12], clock_out_temp[13]);
   FF_jk FF_jk15(1'b1, 1'b1, 1'b0, 1'b0, clock_out_temp[13], clock_out_temp[14]);
   FF_jk FF_jk16(1'b1, 1'b1, 1'b0, 1'b0, clock_out_temp[14], clock_out_temp[15]);
+  FF_jk FF_jk17(1'b1, 1'b1, 1'b0, 1'b0, clock_out_temp[15], clock_out_temp[16]);
+  FF_jk FF_jk18(1'b1, 1'b1, 1'b0, 1'b0, clock_out_temp[16], clock_out_temp[17]);
+  FF_jk FF_jk19(1'b1, 1'b1, 1'b0, 1'b0, clock_out_temp[17], clock_out_temp[18]);
+  FF_jk FF_jk20(1'b1, 1'b1, 1'b0, 1'b0, clock_out_temp[18], clock_out_temp[19]);
+  FF_jk FF_jk21(1'b1, 1'b1, 1'b0, 1'b0, clock_out_temp[19], clock_out_temp[20]);
   
   assign clock_out = clock_out_temp;  
 endmodule
@@ -28,7 +33,7 @@ endmodule
 `timescale 1ns / 1ps // define a escala de tempo
 module TB_DivisorFreq();
   reg clock_in;
-  wire [15:0] clock_out;
+  wire [20:0] clock_out;
 
   divisor_freq divisor_freq(clock_in, clock_out);
 
