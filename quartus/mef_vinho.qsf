@@ -60,6 +60,7 @@ set_global_assignment -name VERILOG_FILE eh_nove.v
 set_global_assignment -name VERILOG_FILE mef_principal.v
 set_global_assignment -name VERILOG_FILE display.v
 set_global_assignment -name VERILOG_FILE contador.v
+set_global_assignment -name VERILOG_FILE decodificador_num.v
 set_global_assignment -name VERILOG_FILE mux_16x8.v
 set_global_assignment -name VERILOG_FILE demux_1x4.v
 set_global_assignment -name VERILOG_FILE mux_32x8.v

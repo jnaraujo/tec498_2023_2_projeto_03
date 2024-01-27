@@ -7,7 +7,7 @@ module decodificador_num(
 
   wire w0, w1, w2, w3, w4, w5, w6, w7;
   wire w8, w9, w10, w11, w12, w13, w14, w15;
-  wire w16, w17, w18, w19, w20, w21, w22;
+  wire w16, w17, w18, w19, w20, w21, w22, w23, w24, w25;
 
   // A = sel[3]
   // B = sel[2]
@@ -89,7 +89,7 @@ module TB_Decodificador_num();
     sel = 4'b1101; #10; // 1	1 1 1	1	1	1	1 - #
     sel = 4'b1110; #10; // 1	1 1 1	1	1	1	1 - #
     sel = 4'b1111; #10; // 1	1 1 1	1	1	1	1 - #
-    
+
     
   end
 endmodule
