@@ -49,12 +49,11 @@ module projeto(
   and and_duzias(cont_duzias_eh_12, cont_duzias[3], cont_duzias[2], ~cont_duzias[1], ~cont_duzias[0]); // eh 12
 
   contador_0_99 c_0_99_d(
-    cont_duzias_eh_12, // clock
-    1'b1, // incrementar
-    reset_contador_duzias, // reset
-    1'b0, // auto_repor
-    duzias_unidades[3], duzias_unidades[2], duzias_unidades[1], duzias_unidades[0],
-    duzias_dezenas[3], duzias_dezenas[2], duzias_dezenas[1], duzias_dezenas[0]
+    .clock(cont_duzias_eh_12), .i(1'b1),
+    .reset(reset_contador_duzias), .auto_repor(1'b0),
+    .reset_no_99(1'b0),
+    .M3(duzias_unidades[3]), .M2(duzias_unidades[2]), .M1(duzias_unidades[1]), .M0(duzias_unidades[0]),
+    .S3(duzias_dezenas[3]), .S2(duzias_dezenas[2]), .S1(duzias_dezenas[1]), .S0(duzias_dezenas[0])
   );
 
   and and_tem_10_duzias(cont_tem_10_duzias, ~duzias_dezenas[3], ~duzias_dezenas[2], ~duzias_dezenas[1], duzias_dezenas[0], ~duzias_unidades[3], ~duzias_unidades[2], ~duzias_unidades[1], duzias_unidades[0]); // tem 10 duzias
@@ -69,23 +68,22 @@ module projeto(
   or or_incrementar_cont_rolhas(incrementar_cont_rolhas, incrementar, VE_out); // incrementar contador rolhas
 
   contador_0_99 c_0_99_r(
-    clock_cont_rolhas, // clock
-    incrementar_cont_rolhas, // incrementar
-    1'b0, // reset
-    1'b1, // auto_repor
-    rolhas_unidades[3], rolhas_unidades[2], rolhas_unidades[1], rolhas_unidades[0],
-    rolhas_dezenas[3], rolhas_dezenas[2], rolhas_dezenas[1], rolhas_dezenas[0]
+  .clock(clock_cont_rolhas), .i(incrementar_cont_rolhas),
+  .reset(1'b0), .auto_repor(1'b1),
+  .reset_no_99(1'b0),
+  .M3(rolhas_unidades[3]), .M2(rolhas_unidades[2]), .M1(rolhas_unidades[1]), .M0(rolhas_unidades[0]),
+  .S3(rolhas_dezenas[3]), .S2(rolhas_dezenas[2]), .S1(rolhas_dezenas[1]), .S0(rolhas_dezenas[0])
   );
 
   // display
   display display(
     .contador(contador),
-    .a(a), .b(b), .c(c), .d(d), .e(e), .f(f), .g(g), .dp(dp),
-    .d0(d0), .d1(d1), .d2(d2), .d3(d3),
     .duzias_dezenas(duzias_dezenas), .duzias_unidades(duzias_unidades),
-    .rolhas_dezenas(rolhas_dezenas), .rolhas_unidades(rolhas_unidades)
+    .rolhas_dezenas(rolhas_dezenas), .rolhas_unidades(rolhas_unidades),
+    .ligado(start),
+    .a(a), .b(b), .c(c), .d(d), .e(e), .f(f), .g(g), .dp(dp),
+    .d0(d0), .d1(d1), .d2(d2), .d3(d3)
   );
-
 
   // define as saidas para
   // ser usadas posteriormente
