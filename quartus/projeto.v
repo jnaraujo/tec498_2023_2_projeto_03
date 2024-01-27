@@ -1,5 +1,6 @@
 module projeto(
   clock, start, PG, CH, RO, CQ, EB, IR,
+  incrementar_btn,
 
   d0, d1, d2, d3,
   a, b, c, d, e, f, g, dp,
@@ -8,6 +9,7 @@ module projeto(
   MOTOR, EV, VE, ALARME
 );
   input clock, start, PG, CH, RO, CQ, EB, IR;
+  input incrementar_btn;
 
   output d0, d1, d2, d3; // display digits
   output a, b, c, d, e, f, g, dp; // display segments
@@ -19,10 +21,16 @@ module projeto(
   wire [20:0] clock_out;
   wire [3:0] duzias_dezenas, duzias_unidades;
   wire [3:0] rolhas_dezenas, rolhas_unidades;
+  wire [3:0] cont_duzias;
+  wire cont_duzias_eh_12, cont_tem_10_duzias;
+  wire reset_contador_duzias;
+  wire incrementar;
+  wire E2, E1, E0;
 
   divisor_freq divisor_freq(clock, clock_out);
   contador contador0(clock_out[15], contador);
 
+  level_to_pulse ltp(~incrementar_btn, clock_out[15], incrementar); // remove o ruido do botao
 
   // maquina de estados principal
   // responsavel pelo funcionamento
@@ -36,19 +44,28 @@ module projeto(
   //////////////////////////////////
   // duzias
   //////////////////////////////////
-  contador_duzias cd(clock, reset, S3, S2, S1, S0);
+  contador_duzias cd(clock, cont_duzias_eh_12, cont_duzias[3], cont_duzias[2], cont_duzias[1], cont_duzias[0]);
+
+  and and_duzias(cont_duzias_eh_12, cont_duzias[3], cont_duzias[2], ~cont_duzias[1], ~cont_duzias[0]); // eh 12
 
   contador_0_99 c_0_99_d(
-    clock, i, reset, auto_repor,
+    cont_duzias_eh_12, // clock
+    1'b1, // incrementar
+    reset_contador_duzias, // reset
+    1'b0, // auto_repor
     duzias_unidades[3], duzias_unidades[2], duzias_unidades[1], duzias_unidades[0],
     duzias_dezenas[3], duzias_dezenas[2], duzias_dezenas[1], duzias_dezenas[0]
   );
+
+  and and_tem_10_duzias(cont_tem_10_duzias, ~duzias_dezenas[3], ~duzias_dezenas[2], ~duzias_dezenas[1], duzias_dezenas[0], ~duzias_unidades[3], ~duzias_unidades[2], ~duzias_unidades[1], duzias_unidades[0]); // tem 10 duzias
+
+  or or_reset_contador_duzias(reset_contador_duzias, cont_tem_10_duzias); // reset contador duzias 
 
   //////////////////////////////////
   // rolhas
   //////////////////////////////////  
   contador_0_99 c_0_99_r(
-    clock, i, reset, auto_repor,
+    clock, incrementar, 1'b0, 1'b1,
     rolhas_unidades[3], rolhas_unidades[2], rolhas_unidades[1], rolhas_unidades[0],
     rolhas_dezenas[3], rolhas_dezenas[2], rolhas_dezenas[1], rolhas_dezenas[0]
   );
