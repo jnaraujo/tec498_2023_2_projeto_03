@@ -23,8 +23,8 @@ module projeto(
   wire [3:0] rolhas_dezenas, rolhas_unidades;
   wire [3:0] cont_duzias;
   wire cont_duzias_eh_12, cont_tem_10_duzias;
-  wire reset_contador_duzias;
-  wire incrementar;
+  wire reset_contador_duzias, incrementar_cont_rolhas;
+  wire incrementar, clock_cont_rolhas;
   wire E2, E1, E0;
 
   divisor_freq divisor_freq(clock, clock_out);
@@ -64,8 +64,15 @@ module projeto(
   //////////////////////////////////
   // rolhas
   //////////////////////////////////  
+
+  or or_clock_cont_rolhas(clock_cont_rolhas, VE_out, incrementar);
+  or or_incrementar_cont_rolhas(incrementar_cont_rolhas, incrementar, VE_out); // incrementar contador rolhas
+
   contador_0_99 c_0_99_r(
-    clock, incrementar, 1'b0, 1'b1,
+    clock_cont_rolhas, // clock
+    incrementar_cont_rolhas, // incrementar
+    1'b0, // reset
+    1'b1, // auto_repor
     rolhas_unidades[3], rolhas_unidades[2], rolhas_unidades[1], rolhas_unidades[0],
     rolhas_dezenas[3], rolhas_dezenas[2], rolhas_dezenas[1], rolhas_dezenas[0]
   );
