@@ -9,8 +9,8 @@ module mef_principal(
   wire a, b, c, d;
 
   LEP_E2 LEP_E2(start, RO, CH, a, b, c, j2, k2);
-  LEP_E1 LEP_E1(start, RO, CH, CQ, a, b, c, j1, k1);
-  LE_E0 LE_E0(start, RO, CQ, PG, EB, a, b, c, j0, k0);
+  LEP_E1 LEP_E1(start, PG, RO, CH, CQ, a, b, c, j1, k1);
+  LE_E0 LE_E0(start, CH, RO, CQ, PG, EB, a, b, c, j0, k0);
 
   FF_jk jk0(
     j2, k2, 1'b0, 1'b0, clock, a
@@ -25,7 +25,11 @@ module mef_principal(
   );
 
 
-  EQ_Saida EQ_Saida(start, RO, CQ, PG, EB, a, b, c, MOTOR, EV, VE, ALARME);
+  EQ_Saida EQ_Saida(start, CH, RO, CQ, PG, EB, a, b, c, MOTOR, EV, VE, ALARME);
+
+  assign E2 = a;
+  assign E1 = b;
+  assign E0 = c;
 endmodule
 
 module LEP_E2(start, RO, CH, E2, E1, E0, j2, k2);
@@ -42,8 +46,8 @@ module LEP_E2(start, RO, CH, E2, E1, E0, j2, k2);
   or or1(k2, w2, w3);
 endmodule
 
-module LEP_E1(start, RO, CH, CQ, E2, E1, E0, j1, k1);
-  input start, RO, CH, CQ, E2, E1, E0;
+module LEP_E1(start, PG, RO, CH, CQ, E2, E1, E0, j1, k1);
+  input start, RO, CH, CQ, E2, E1, E0, PG;
   output j1, k1;
 
   wire w0, w1, w2, w3, w4;
@@ -58,8 +62,8 @@ module LEP_E1(start, RO, CH, CQ, E2, E1, E0, j1, k1);
   or or1(k1, w2, w3, w4);
 endmodule
 
-module LE_E0(start, RO, CQ, PG, EB, E2, E1, E0, j0, k0);
-  input start, RO, CQ, PG, EB, E2, E1, E0;
+module LE_E0(start, CH, RO, CQ, PG, EB, E2, E1, E0, j0, k0);
+  input start, RO, CQ, PG, EB, E2, E1, E0, CH;
   output j0, k0;
 
   wire w0, w1, w2, w3, w4, w5;
@@ -75,8 +79,8 @@ module LE_E0(start, RO, CQ, PG, EB, E2, E1, E0, j0, k0);
   or or1(k0, w3, w4, w5);
 endmodule
 
-module EQ_Saida(start, RO, CQ, PG, EB, E2, E1, E0, motor, ev, ve, alarme);
-  input start, RO, CQ, PG, EB, E2, E1, E0;
+module EQ_Saida(start, CH, RO, CQ, PG, EB, E2, E1, E0, motor, ev, ve, alarme);
+  input start, RO, CQ, PG, EB, E2, E1, E0, CH;
   output motor, ev, ve, alarme;
 
   wire w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11;
