@@ -16,7 +16,8 @@ module display(
   output d0, d1, d2, d3;
 
   wire d0_t, d1_t, d2_t, d3_t;
-  wire [8:0] saida_d0, saida_d1, saida_d2, saida_d3;
+  wire [8:0] saida_d0, saida_d1, saida_d2, saida_d3; // saida intermediaria
+  wire [8:0] saida_d0_f, saida_d1_f, saida_d2_f, saida_d3_f; // saida final
 
   demux_1x4 demux0(.Sel(contador), .E(ligado), .Out4(d0_t), .Out3(d1_t), .Out2(d2_t), .Out1(d3_t)); // define qual digito sera mostrado
 
@@ -46,9 +47,37 @@ module display(
     saida_d3[7], saida_d3[6], saida_d3[5], saida_d3[4], saida_d3[3], saida_d3[2], saida_d3[1], saida_d3[0],
   );
 
+  mux_16x8 m0(
+    8'b11111111,
+    saida_d0,
+    ligado,
+    saida_d0_f
+  );
+
+  mux_16x8 m1(
+    8'b11111111,
+    saida_d1,
+    ligado,
+    saida_d1_f
+  );
+
+  mux_16x8 m2(
+    8'b11111111,
+    saida_d2,
+    ligado,
+    saida_d2_f
+  );
+
+  mux_16x8 m3(
+    8'b11111111,
+    saida_d3,
+    ligado,
+    saida_d3_f
+  );
+
   // mux da saida dos segmentos
-  mux_32x8 m2(
-    saida_d0, saida_d1, saida_d2, saida_d3,
+  mux_32x8 m4(
+    saida_d0_f, saida_d1_f, saida_d2_f, saida_d3_f,
     contador,
     {a, b, c, d, e, f, g, dp}
   );
