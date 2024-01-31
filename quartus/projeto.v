@@ -22,6 +22,7 @@ module projeto(
   wire [3:0] duzias_dezenas, duzias_unidades;
   wire [3:0] rolhas_dezenas, rolhas_unidades;
   wire [3:0] cont_duzias;
+  wire enabled, start_ltp;
   wire cont_duzias_eh_12, cont_tem_10_duzias;
   wire reset_contador_duzias, incrementar_cont_rolhas;
   wire incrementar, clock_cont_rolhas;
@@ -31,6 +32,12 @@ module projeto(
   contador contador0(clock_out[15], contador);
 
   level_to_pulse ltp(~incrementar_btn, clock_out[15], incrementar); // remove o ruido do botao
+  level_to_pulse ltp_start(~start, clock_out[15], start_ltp); // remove o ruido do botao
+
+  // inverte o enabled sempre que o botao de start for pressionado
+  FF_jk FF_jk_enable(
+    1'b1, 1'b1, 1'b0, 1'b0, start_ltp, enabled
+  );
 
   // maquina de estados principal
   // responsavel pelo funcionamento
