@@ -30,7 +30,7 @@ module contador_0_99(
     clock_ccd_d = 1'b0;
   end
 
-  always @(negedge clock or negedge s_mux) begin
+  always @(posedge clock or posedge s_mux) begin
     clock_ccd_d <= s_mux;
   end
 
