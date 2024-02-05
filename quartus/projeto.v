@@ -73,7 +73,7 @@ module projeto(
 
   and and_tem_10_duzias(cont_tem_10_duzias, ~duzias_dezenas[3], ~duzias_dezenas[2], ~duzias_dezenas[1], duzias_dezenas[0], ~duzias_unidades[3], ~duzias_unidades[2], ~duzias_unidades[1], duzias_unidades[0]); // tem 10 duzias
 
-  or or_reset_contador_duzias(reset_contador_duzias, cont_tem_10_duzias); // reset contador duzias 
+  or or_reset_contador_duzias(reset_contador_duzias, cont_tem_10_duzias, ~enabled); // reset contador duzias 
 
   //////////////////////////////////
   // rolhas
