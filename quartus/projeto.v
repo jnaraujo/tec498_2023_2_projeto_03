@@ -64,7 +64,7 @@ module projeto(
   and and_duzias(cont_duzias_eh_12, cont_duzias[3], cont_duzias[2], ~cont_duzias[1], ~cont_duzias[0]); // eh 12
 
   contador_0_99 c_0_99_d(
-    .clock(cont_duzias_eh_12), .i(1'b1),
+    .clock(cont_duzias_eh_12), .inc(1'b1),
     .reset(reset_contador_duzias), .auto_repor(1'b0),
     .reset_no_99(1'b0),
     .M3(duzias_unidades[3]), .M2(duzias_unidades[2]), .M1(duzias_unidades[1]), .M0(duzias_unidades[0]),
@@ -80,7 +80,7 @@ module projeto(
   //////////////////////////////////
 
   contador_0_99 c_0_99_r(
-  .clock((incrementar && IR) || VE_out), .i(IR),
+  .clock((incrementar && IR) || VE_out), .inc(IR),
   .reset(1'b0), .auto_repor(1'b1),
   .reset_no_99(1'b0),
   .M3(rolhas_unidades[3]), .M2(rolhas_unidades[2]), .M1(rolhas_unidades[1]), .M0(rolhas_unidades[0]),
