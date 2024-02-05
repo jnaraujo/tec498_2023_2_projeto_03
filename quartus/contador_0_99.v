@@ -30,12 +30,12 @@ module contador_0_99(
     clock_ccd_d = 1'b0;
   end
 
-  always @(posedge clock and posedge s_mux) begin
+  always @(negedge clock or negedge s_mux) begin
     clock_ccd_d <= s_mux;
   end
 
   contador_cd ccd_d(
-    .clock(~clock_ccd_d), .i(inc), .reset(reset_contador),
+    .clock(clock_ccd_d), .i(inc), .reset(reset_contador),
     .set_2(repor), .set_5(1'b0),
     .S3(d_S3), .S2(d_S2), .S1(d_S1), .S0(d_S0)
   ); // dezenas
@@ -120,7 +120,7 @@ module TB_contador_0_99_for();
   integer i;
 
   contador_0_99 contador_0_99(
-    clock, 1'b1, 1'b0, 1'b0, 1'b1,
+    clock, 1'b1, 1'b0, 1'b0, 1'b0,
     M3, M2, M1, M0, S3, S2, S1, S0
   );
 
