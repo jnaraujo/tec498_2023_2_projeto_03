@@ -1,27 +1,44 @@
 module contador_0_99(
   clock, inc, reset, auto_repor, reset_no_99,
+  // M = unidades
+  // S = dezenas
   M3, M2, M1, M0, S3, S2, S1, S0
   );
   input clock, reset, auto_repor, inc, reset_no_99;
   output M3, M2, M1, M0, S3, S2, S1, S0;
 
-  wire clock_ccd, clock_ccd_d;
+  reg clock_ccd_d;
+  wire clock_ccd, s_mux;
   wire u_S3, u_S2, u_S1, u_S0;
   wire d_S3, d_S2, d_S1, d_S0;
   wire eh_nove_d, eh_nove_u, eh_noventa_nove;
   wire u_menor_5, d_zero, repor, reset_contador;
-  wire inc_dez;
+  wire clock_ff;
 
   or orrst(reset_contador, reset, reset_no_99 && eh_noventa_nove);
 
   and and0(clock_ccd, ~clock, ~eh_noventa_nove);
-  contador_cd ccd_u(clock_ccd, inc, reset_contador, 1'b0, repor, u_S3, u_S2, u_S1, u_S0); // unidades
+  contador_cd ccd_u(
+    .clock(clock_ccd), .i(inc), .reset(reset_contador),
+    .set_2(1'b0), .set_5(repor),
+    .S3(u_S3), .S2(u_S2), .S1(u_S1), .S0(u_S0)
+  ); // unidades
 
-  FF_d(inc,clock,inc_dez);
+  mux_2x1 mux_2x1(.a(eh_nove_u), .b(~eh_nove_u), .sel(inc), .out(s_mux));
 
-  mux_2x1 mux_2x1(u_S3, ~u_S3, inc_dez, clock_ccd_d);
+  initial begin
+    clock_ccd_d = 1'b0;
+  end
 
-  contador_cd ccd_d(clock_ccd_d, inc_dez, reset_contador, repor, 1'b0, d_S3, d_S2, d_S1, d_S0); // dezenas
+  always @(negedge clock or negedge s_mux) begin
+    clock_ccd_d <= s_mux;
+  end
+
+  contador_cd ccd_d(
+    .clock(~clock_ccd_d), .i(inc), .reset(reset_contador),
+    .set_2(repor), .set_5(1'b0),
+    .S3(d_S3), .S2(d_S2), .S1(d_S1), .S0(d_S0)
+  ); // dezenas
 
   eh_nove eh_noveU(u_S3, u_S2, u_S1, u_S0, eh_nove_u); // unidades eh nove
   eh_nove eh_noveD(d_S3, d_S2, d_S1, d_S0, eh_nove_d); // dezenas eh nove
@@ -47,7 +64,7 @@ module TB_contador_0_99();
   reg clock, reset, auto_repor, i;
   wire M3, M2, M1, M0, S3, S2, S1, S0;
 
-  contador_0_99 contador_0_99(clock, i, reset, auto_repor, M3, M2, M1, M0, S3, S2, S1, S0);
+  contador_0_99 contador_0_99(clock, i, reset, auto_repor, 1'b0, M3, M2, M1, M0, S3, S2, S1, S0);
 
   initial begin
     i = 1; clock = 0; reset = 0; auto_repor = 0; #10; // M = 0000 S = 0000
@@ -102,7 +119,10 @@ module TB_contador_0_99_for();
   wire M3, M2, M1, M0, S3, S2, S1, S0;
   integer i;
 
-  contador_0_99 contador_0_99(clock, 1'b1, 1'b0, 1'b0, 1'b1, M3, M2, M1, M0, S3, S2, S1, S0);
+  contador_0_99 contador_0_99(
+    clock, 1'b1, 1'b0, 1'b0, 1'b1,
+    M3, M2, M1, M0, S3, S2, S1, S0
+  );
 
   initial begin
     for (i = 0; i < 110; i = i + 1) begin
