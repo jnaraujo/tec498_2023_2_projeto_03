@@ -1,20 +1,26 @@
 module projeto(
   clock, start, PG, CH, RO, CQ, EB, IR,
-  incrementar_btn,
 
   d0, d1, d2, d3,
   a, b, c, d, e, f, g, dp,
 
-  PG_out, CH_out, RO_out, CQ_out, EB_out, IR_out,
-  MOTOR, EV, VE, ALARME
+  start_out, PG_out, CH_out, RO_out, CQ_out, EB_out, IR_out,
+  ir_clock,
+  btn_1,
+  col_out,
+  MOTOR, EV, VE, ALARME,
+  
+  e2_out, e1_out, e0_out
 );
   input clock, start, PG, CH, RO, CQ, EB, IR;
-  input incrementar_btn;
+  input btn_1, ir_clock;
 
   output d0, d1, d2, d3; // display digits
   output a, b, c, d, e, f, g, dp; // display segments
   output PG_out, CH_out, RO_out, CQ_out, EB_out, IR_out;
   output MOTOR, EV, VE, ALARME;
+  output start_out, col_out;
+  output e2_out, e1_out, e0_out;
 
   wire MOTOR_out, EV_out, VE_out, ALARME_out;
   wire [2:0] contador; // contador de 0 a 4
@@ -27,12 +33,14 @@ module projeto(
   wire reset_contador_duzias, incrementar_cont_rolhas;
   wire incrementar, clock_cont_rolhas;
   wire E2, E1, E0;
+  wire clock_btn;
 
   divisor_freq divisor_freq(clock, clock_out);
   contador contador0(clock_out[15], contador);
 
-  level_to_pulse ltp(~incrementar_btn, clock_out[15], incrementar); // remove o ruido do botao
+  level_to_pulse ltp(~ir_clock, clock_out[15], incrementar); // remove o ruido do botao
   level_to_pulse ltp_start(~start, clock_out[15], start_ltp); // remove o ruido do botao
+  level_to_pulse(~btn_1, clock_out[15], clock_btn);
 
   // inverte o enabled sempre que o botao de start for pressionado
   FF_jk FF_jk_enable(
@@ -43,7 +51,7 @@ module projeto(
   // responsavel pelo funcionamento
   // da perte principal (producao)
   mef_principal mef_principal(
-    clock_out[20], start,
+    clock_btn, start,
     PG, CH, RO, CQ, EB,
     E2, E1, E0, MOTOR_out, EV_out, VE_out, ALARME_out
   );
@@ -51,7 +59,7 @@ module projeto(
   //////////////////////////////////
   // duzias
   //////////////////////////////////
-  contador_duzias cd(clock, cont_duzias_eh_12, cont_duzias[3], cont_duzias[2], cont_duzias[1], cont_duzias[0]);
+  contador_duzias cd(VE_out, cont_duzias_eh_12, cont_duzias[3], cont_duzias[2], cont_duzias[1], cont_duzias[0]);
 
   and and_duzias(cont_duzias_eh_12, cont_duzias[3], cont_duzias[2], ~cont_duzias[1], ~cont_duzias[0]); // eh 12
 
@@ -69,13 +77,10 @@ module projeto(
 
   //////////////////////////////////
   // rolhas
-  //////////////////////////////////  
-
-  or or_clock_cont_rolhas(clock_cont_rolhas, VE_out, incrementar);
-  or or_incrementar_cont_rolhas(incrementar_cont_rolhas, incrementar, VE_out); // incrementar contador rolhas
+  //////////////////////////////////
 
   contador_0_99 c_0_99_r(
-  .clock(clock_cont_rolhas), .i(incrementar_cont_rolhas),
+  .clock((incrementar && IR) || VE_out), .i(IR),
   .reset(1'b0), .auto_repor(1'b1),
   .reset_no_99(1'b0),
   .M3(rolhas_unidades[3]), .M2(rolhas_unidades[2]), .M1(rolhas_unidades[1]), .M0(rolhas_unidades[0]),
@@ -87,7 +92,7 @@ module projeto(
     .contador(contador),
     .duzias_dezenas(duzias_dezenas), .duzias_unidades(duzias_unidades),
     .rolhas_dezenas(rolhas_dezenas), .rolhas_unidades(rolhas_unidades),
-    .ligado(start),
+    .ligado(enabled),
     .a(a), .b(b), .c(c), .d(d), .e(e), .f(f), .g(g), .dp(dp),
     .d0(d0), .d1(d1), .d2(d2), .d3(d3)
   );
@@ -101,10 +106,16 @@ module projeto(
 
   // define as saidas dos sensores
   // para mostrar nos leds
-  assign PG_out = PG;
-  assign CH_out = CH;
-  assign RO_out = RO;
-  assign CQ_out = CQ;
-  assign EB_out = EB;
-  assign IR_out = IR;
+  assign PG_out = ~PG;
+  assign CH_out = ~CH;
+  assign RO_out = ~RO;
+  assign CQ_out = ~CQ;
+  assign EB_out = ~EB;
+  assign IR_out = ~IR;
+  assign start_out = ~enabled;
+  assign col_out = 1'b1;
+  
+  assign e2_out = E2;
+  assign e1_out = E1;
+  assign e0_out = E0;
 endmodule
