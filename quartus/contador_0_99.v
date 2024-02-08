@@ -7,8 +7,8 @@ module contador_0_99(
   input clock, reset, auto_repor, inc, reset_no_99;
   output M3, M2, M1, M0, S3, S2, S1, S0;
 
-  reg clock_ccd_d;
-  wire clock_ccd, s_mux;
+  //reg clock_ccd_d;
+  wire clock_ccd;
   wire u_S3, u_S2, u_S1, u_S0;
   wire d_S3, d_S2, d_S1, d_S0;
   wire eh_nove_d, eh_nove_u, eh_noventa_nove;
@@ -24,18 +24,8 @@ module contador_0_99(
     .S3(u_S3), .S2(u_S2), .S1(u_S1), .S0(u_S0)
   ); // unidades
 
-  mux_2x1 mux_2x1(.a(eh_nove_u), .b(~eh_nove_u), .sel(inc), .out(s_mux));
-
-  initial begin
-    clock_ccd_d = 1'b0;
-  end
-
-  always @(negedge clock) begin
-    clock_ccd_d <= s_mux;
-  end
-
   contador_cd ccd_d(
-    .clock(clock_ccd_d), .i(inc), .reset(reset_contador),
+    .clock(eh_nove_u), .i(inc), .reset(reset_contador),
     .set_2(repor), .set_5(1'b0),
     .S3(d_S3), .S2(d_S2), .S1(d_S1), .S0(d_S0)
   ); // dezenas
