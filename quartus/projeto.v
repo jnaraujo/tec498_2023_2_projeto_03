@@ -33,7 +33,7 @@ module projeto(
   wire reset_contador_duzias, incrementar_cont_rolhas;
   wire incrementar, clock_cont_rolhas;
   wire E2, E1, E0;
-  wire clock_btn;
+  wire clock_btn, IR_db;
 
   divisor_freq divisor_freq(clock, clock_out);
   contador contador0(clock_out[15], contador);
@@ -41,6 +41,7 @@ module projeto(
   level_to_pulse ltp(~ir_clock, clock_out[15], incrementar); // remove o ruido do botao
   level_to_pulse ltp_start(~start, clock_out[15], start_ltp); // remove o ruido do botao
   level_to_pulse(~btn_1, clock_out[15], clock_btn);
+  level_to_pulse(IR, clock_out[15], IR_db);
 
   // inverte o enabled sempre que o botao de start for pressionado
   FF_jk FF_jk_enable(
@@ -59,7 +60,7 @@ module projeto(
   //////////////////////////////////
   // duzias
   //////////////////////////////////
-  contador_duzias cd(VE_out, cont_duzias_eh_12, cont_duzias[3], cont_duzias[2], cont_duzias[1], cont_duzias[0]);
+  contador_duzias cd(E2 && E1 && ~E0, cont_duzias_eh_12, cont_duzias[3], cont_duzias[2], cont_duzias[1], cont_duzias[0]);
 
   and and_duzias(cont_duzias_eh_12, cont_duzias[3], cont_duzias[2], ~cont_duzias[1], ~cont_duzias[0]); // eh 12
 
