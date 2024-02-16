@@ -52,7 +52,7 @@ module projeto(
   // responsavel pelo funcionamento
   // da perte principal (producao)
   mef_principal mef_principal(
-    clock_btn, start,
+    clock_btn, enabled,
     PG, CH, RO, CQ, EB,
     E2, E1, E0, MOTOR_out, EV_out, VE_out, ALARME_out
   );
